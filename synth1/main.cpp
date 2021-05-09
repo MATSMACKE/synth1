@@ -18,7 +18,7 @@ void displayKeyboard() {
         "|   |___|   |   |___| |___|   |   |___| |___| |___|   |" << endl <<
         "|     |     |     |     |     |     |     |     |     |" << endl <<
         "|  A  |  S  |  D  |  F  |  G  |  H  |  J  |  K  |  L  |" << endl <<
-        "|_____|_____|_____|_____|_____|_____|_____|_____|_____|" << endl << endl << "X -> Octave Up" << endl << "Z -> Octave Down" << endl << endl;
+        "|_____|_____|_____|_____|_____|_____|_____|_____|_____|" << endl << endl << "X -> Octave Up" << endl << "Z -> Octave Down" << endl << endl  << "1 -> Sine Wave" << endl << "2 -> Square Wave" << endl << endl;
 }
 
 double ProduceSquareWave(double dTime) {
@@ -73,16 +73,16 @@ int main() {
     cin >> volume;
 
     //Choose waveform
-    cout << "Waveform (s = sin, q = square): ";
+    cout << "Waveform (1 = sin, 2 = square): ";
     char waveform;
     cin >> waveform;
 
     //Link noise function to soundMachine
     switch (waveform) {
-        case 's':
+        case '1':
             sound.SetUserFunction(ProduceSineWave);
             break;
-        case 'q':
+        case '2':
             sound.SetUserFunction(ProduceSquareWave);
             break;
         default:
@@ -95,6 +95,9 @@ int main() {
 
     bool XKeyState = false;
     bool ZKeyState = false;
+
+    bool KeyState1 = false;
+    bool KeyState2 = false;
 
     system("CLS");
 
@@ -150,11 +153,33 @@ int main() {
             running = false;
         }
 
+        if (GetAsyncKeyState('1') & 0x8000) {
+            if (KeyState1 == false) {
+                sound.SetUserFunction(ProduceSineWave);
+            }
+            KeyState1 = true;
+        }
+        else {
+            KeyState1 = false;
+        }
+
+        if (GetAsyncKeyState('2') & 0x8000) {
+            if (KeyState2 == false) {
+                sound.SetUserFunction(ProduceSquareWave);
+            }
+            KeyState2 = true;
+        }
+        else {
+            KeyState2 = false;
+        }
+
         //Give Octave Feedback
         cout << "\rCurrent octave is: " << currentOctave;
 
         Sleep(2);
     }
+
+    cout << endl << endl;
 
     system("pause");
 
